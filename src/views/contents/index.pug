@@ -1,27 +1,49 @@
 extends ../layout
 
 block content
-  .d-flex.justify-content-between.align-items-center.mb-4
-    h1 Contents
-    a.btn.btn-primary(href="/contents/create") Add New Content
+  .page-header.d-flex.justify-content-between.align-items-center
+    h1.mb-0 Contents
+    a.btn.btn-primary(href="/contents/create")
+      i.fas.fa-plus.me-2
+      | Add New Content
 
-  .row
+  .row.g-4
     each content in contents
-      .col-md-4.mb-4
-        .card
-          if content.PosterURL
-            img.card-img-top(src=content.PosterURL, alt=content.Title)
+      .col-md-4.col-lg-3
+        .content-card.card
+          .card-img-container
+            if content.PosterURL
+              img.card-img-top(src=content.PosterURL, alt=content.Title)
+            else
+              .no-image-placeholder
+                i.fas.fa-film.fa-3x
+            if content.Rating
+              .rating-badge
+                i.fas.fa-star.me-1
+                | #{content.Rating}
           .card-body
             h5.card-title= content.Title
             if content.OriginalTitle
-              p.card-text Original Title: #{content.OriginalTitle}
-            p.card-text Type: #{content.Type}
-            if content.ReleaseDate
-              p.card-text Release Date: #{new Date(content.ReleaseDate).toLocaleDateString()}
-            if content.Rating
-              p.card-text Rating: #{content.Rating}
-            .btn-group
-              a.btn.btn-info(href=`/contents/${content.ContentID}`) View
-              a.btn.btn-warning(href=`/contents/${content.ContentID}/edit`) Edit
+              p.card-text.text-muted= content.OriginalTitle
+            .card-text
+              span.badge.bg-primary.me-2= content.Type
+              if content.ReleaseDate
+                span.text-muted
+                  i.far.fa-calendar-alt.me-1
+                  | #{new Date(content.ReleaseDate).toLocaleDateString()}
+            if content.Type === 'tvshow'
+              .seasons-info.mt-2
+                small.text-muted
+                  i.fas.fa-tv.me-1
+                  | #{content.NumberOfSeasons} Seasons
+            .btn-group.w-100.mt-3
+              a.btn.btn-outline-info.btn-sm(href=`/contents/${content.ContentID}`)
+                i.fas.fa-eye.me-1
+                | View
+              a.btn.btn-outline-warning.btn-sm(href=`/contents/${content.ContentID}/edit`)
+                i.fas.fa-edit.me-1
+                | Edit
               form.d-inline(action=`/contents/${content.ContentID}?_method=DELETE`, method="POST")
-                button.btn.btn-danger(type="submit") Delete 
+                button.btn.btn-outline-danger.btn-sm(type="submit")
+                  i.fas.fa-trash.me-1
+                  | Delete 

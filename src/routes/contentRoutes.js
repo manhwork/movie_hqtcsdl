@@ -12,9 +12,9 @@ router.put("/:id", contentController.updateContent);
 router.delete("/:id", contentController.deleteContent);
 
 // Season routes
-router.get("/:id/seasons/:seasonId", contentController.getSeasonById);
 router.get("/:id/seasons/create", contentController.createSeasonForm);
 router.post("/:id/seasons", contentController.createSeason);
+router.get("/:id/seasons/:seasonId", contentController.getSeasonById);
 router.get("/:id/seasons/:seasonId/edit", contentController.updateSeasonForm);
 router.put("/:id/seasons/:seasonId", contentController.updateSeason);
 router.delete("/:id/seasons/:seasonId", contentController.deleteSeason);

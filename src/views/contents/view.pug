@@ -1,0 +1,99 @@
+extends ../layout
+
+block content
+  .content-detail
+    .row
+      .col-md-4
+        if content.PosterURL
+          img.img-fluid.rounded(src=content.PosterURL, alt=content.Title)
+        else
+          .no-image-placeholder.rounded
+            i.fas.fa-film.fa-5x
+      .col-md-8
+        h1.mb-3= content.Title
+        if content.OriginalTitle
+          h4.text-muted.mb-4= content.OriginalTitle
+        
+        .content-info.mb-4
+          .badge.bg-primary.me-2= content.Type
+          if content.Rating
+            .badge.bg-warning.text-dark.me-2
+              i.fas.fa-star.me-1
+              | #{content.Rating}
+          if content.ReleaseDate
+            span.text-muted
+              i.far.fa-calendar-alt.me-1
+              | #{new Date(content.ReleaseDate).toLocaleDateString()}
+        
+        if content.Description
+          .description.mb-4
+            h5 Description
+            p.text-muted= content.Description
+
+        if content.Type === 'tvshow'
+          .seasons-section.mt-4
+            .season-actions.d-flex.justify-content-between.align-items-center
+              h4.mb-0 Seasons
+              a.btn.btn-primary(href=`/seasons/create?contentId=${content.ContentID}`)
+                i.bi.bi-plus-circle.me-2
+                | Add Season
+          
+            .accordion.mt-3
+              each season in seasons
+                .accordion-item
+                  .accordion-header
+                    button.accordion-button.collapsed(type='button' data-bs-toggle='collapse' data-bs-target=`#season-${season.SeasonID}`)
+                      .season-card
+                        .season-poster
+                          if season.poster
+                            img(src=season.poster alt=`${season.Title} poster`)
+                          else
+                            .no-image-placeholder
+                              i.bi.bi-image
+                        .season-info
+                          .season-title= season.Title
+                          .season-meta
+                            span.badge.bg-secondary.me-2 Season #{season.SeasonNumber}
+                            span.badge.bg-info #{season.episodes ? season.episodes.length : 0} Episodes
+                  
+                  .accordion-collapse.collapse(id=`season-${season.SeasonID}`)
+                    .accordion-body
+                      .d-flex.justify-content-end.mb-3
+                        .btn-group
+                          a.btn.btn-sm.btn-outline-primary(href=`/episodes/create?seasonId=${season.SeasonID}`)
+                            i.bi.bi-plus-circle.me-2
+                            | Add Episode
+                          a.btn.btn-sm.btn-outline-secondary(href=`/seasons/edit/${season.SeasonID}`)
+                            i.bi.bi-pencil.me-2
+                            | Edit
+                          button.btn.btn-sm.btn-outline-danger(type='button' onclick=`deleteSeason(${season.SeasonID})`)
+                            i.bi.bi-trash.me-2
+                            | Delete
+                      
+                      if season.episodes && season.episodes.length > 0
+                        .table-responsive
+                          table.table.table-hover
+                            thead
+                              tr
+                                th Episode
+                                th Title
+                                th Duration
+                                th Release Date
+                                th Actions
+                            tbody
+                              each episode in season.episodes
+                                tr
+                                  td= episode.EpisodeNumber
+                                  td= episode.Title
+                                  td= episode.Duration ? `${episode.Duration} min` : 'N/A'
+                                  td= episode.ReleaseDate ? new Date(episode.ReleaseDate).toLocaleDateString() : 'N/A'
+                                  td
+                                    .btn-group
+                                      a.btn.btn-sm.btn-outline-primary(href=`/episodes/edit/${episode.EpisodeID}`)
+                                        i.bi.bi-pencil
+                                      button.btn.btn-sm.btn-outline-danger(type='button' onclick=`deleteEpisode(${episode.EpisodeID})`)
+                                        i.bi.bi-trash
+                      else
+                        .alert.alert-info.mb-0
+                          i.bi.bi-info-circle.me-2
+                          | No episodes added yet 

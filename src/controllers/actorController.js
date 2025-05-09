@@ -30,8 +30,10 @@ exports.createActorForm = (req, res) => {
 exports.createActor = async (req, res) => {
     try {
         const actorId = await Actor.create(req.body);
+        req.flash("success_msg", "Thêm diễn viên thành công!");
         res.redirect(`/actors/${actorId}`);
     } catch (err) {
+        req.flash("error_msg", err.message);
         res.status(500).render("error", { message: err.message });
     }
 };
@@ -53,8 +55,10 @@ exports.updateActorForm = async (req, res) => {
 exports.updateActor = async (req, res) => {
     try {
         await Actor.update(req.params.id, req.body);
+        req.flash("success_msg", "Cập nhật diễn viên thành công!");
         res.redirect(`/actors/${req.params.id}`);
     } catch (err) {
+        req.flash("error_msg", err.message);
         res.status(500).render("error", { message: err.message });
     }
 };
@@ -62,8 +66,10 @@ exports.updateActor = async (req, res) => {
 exports.deleteActor = async (req, res) => {
     try {
         await Actor.delete(req.params.id);
+        req.flash("success_msg", "Xóa diễn viên thành công!");
         res.redirect("/actors");
     } catch (err) {
+        req.flash("error_msg", err.message);
         res.status(500).render("error", { message: err.message });
     }
 };

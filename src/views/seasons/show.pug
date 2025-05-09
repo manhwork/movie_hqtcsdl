@@ -1,41 +1,53 @@
 extends ../layout
 
 block content
-  .row
-    .col-md-4
-      if season.PosterURL
-        img.img-fluid.rounded(src=season.PosterURL, alt=season.Title)
-    .col-md-8
-      h1= season.Title
-      p Season #{season.SeasonNumber}
-      if season.ReleaseDate
-        p Release Date: #{new Date(season.ReleaseDate).toLocaleDateString()}
-      if season.EpisodeCount
-        p Episodes: #{season.EpisodeCount}
-      .btn-group
-        a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/edit`) Edit
-        form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}?_method=DELETE`, method="POST")
-          button.btn.btn-danger(type="submit") Delete
-        a.btn.btn-secondary(href=`/contents/${content.ContentID}`) Back to Content
-
-  .mt-4
-    h2 Episodes
-    a.btn.btn-primary.mb-3(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/create`) Add New Episode
+  .container.mt-4
     .row
-      each episode in episodes
-        .col-md-4.mb-4
-          .card
-            if episode.ThumbnailURL
-              img.card-img-top(src=episode.ThumbnailURL, alt=episode.Title)
-            .card-body
-              h5.card-title= episode.Title
-              p.card-text Episode #{episode.EpisodeNumber}
-              if episode.Duration
-                p.card-text Duration: #{episode.Duration} minutes
-              if episode.ReleaseDate
-                p.card-text Release Date: #{new Date(episode.ReleaseDate).toLocaleDateString()}
-              .btn-group
-                a.btn.btn-info(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}`) View
-                a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}/edit`) Edit
-                form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=DELETE`, method="POST")
-                  button.btn.btn-danger(type="submit") Delete 
+      .col-md-4
+        .card.h-100
+          .card-img-container
+            if season.PosterURL
+              img.card-img-top(src=season.PosterURL, alt=season.Title)
+            else
+              .no-image-placeholder
+                i.fas.fa-image
+          .card-body.h-100
+            h3.card-title= season.Title
+            p.card-text Season #{season.SeasonNumber}
+            if season.ReleaseDate
+              p.card-text Release Date: #{new Date(season.ReleaseDate).toLocaleDateString()}
+            if season.EpisodeCount
+              p.card-text Episodes: #{season.EpisodeCount}
+            .btn-group
+              a.btn.btn-warning(href=`/contents/${season.ContentID}/seasons/${season.SeasonID}/edit`) Edit
+              form.d-inline(action=`${season.ContentID}/seasons/${season.SeasonID}?_method=DELETE`, method="POST")
+                button.btn.btn-danger(type="submit") Delete
+
+
+      .col-md-8
+
+        if episodes && episodes.length > 0
+          //- .table-responsive
+          table.table.table-hover.table-striped.table-bordered
+            thead
+              tr
+                th Episode
+                th Title
+                th Duration
+                th Release Date
+                th Actions
+            tbody
+              each episode in episodes
+                tr
+                  td= episode.EpisodeNumber
+                  td= episode.Title
+                  td= episode.Duration ? `${episode.Duration} min` : 'N/A'
+                  td= episode.ReleaseDate ? new Date(episode.ReleaseDate).toLocaleDateString() : 'N/A'
+                  td
+                    .btn-group
+                      a.btn.btn-sm.btn-outline-primary(href=`/contents/${season.ContentID}}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}/edit`)
+                        i.bi.bi-pencil
+                      button.btn.btn-sm.btn-outline-danger(type='button' onclick=`deleteEpisode(${episode.EpisodeID})`)
+                        i.bi.bi-trash
+        else
+          .alert.alert-info.mt-3 Không có tập phim nào trong season này.

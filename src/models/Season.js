@@ -44,10 +44,19 @@ class Season {
 
     static async update(id, seasonData) {
         try {
+            // Lấy season hiện tại để lấy contentId nếu không có trong seasonData
+            const currentSeason = await this.getById(id);
+            if (!currentSeason) {
+                throw new Error("Season not found");
+            }
+
+            // Sử dụng contentId từ seasonData hoặc từ season hiện tại
+            const contentId = seasonData.contentId || currentSeason.ContentID;
+
             await pool
                 .request()
                 .input("id", sql.Int, id)
-                .input("contentId", sql.Int, seasonData.contentId)
+                .input("contentId", sql.Int, contentId)
                 .input("seasonNumber", sql.Int, seasonData.seasonNumber)
                 .input("title", sql.VarChar, seasonData.title)
                 .input("posterURL", sql.VarChar, seasonData.posterURL)
@@ -75,6 +84,37 @@ class Season {
                 .input("id", sql.Int, id)
                 .query("DELETE FROM Seasons WHERE SeasonID = @id");
             return true;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async deleteByContentId(contentId) {
+        try {
+            await pool
+                .request()
+                .input("contentId", sql.Int, contentId)
+                .query("DELETE FROM Seasons WHERE ContentID = @contentId");
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getCount() {
+        const result = await pool
+            .request()
+            .query("SELECT COUNT(*) AS count FROM Seasons");
+        return result.recordset[0].count;
+    }
+
+    static async getByContentId(contentId) {
+        try {
+            const result = await pool
+                .request()
+                .input("contentId", sql.Int, contentId)
+                .query("SELECT * FROM Seasons WHERE ContentID = @contentId");
+            return result.recordset;
         } catch (err) {
             throw err;
         }

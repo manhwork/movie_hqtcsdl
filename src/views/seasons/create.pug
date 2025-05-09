@@ -1,23 +1,34 @@
 extends ../layout
 
 block content
-  h1 Add New Season
-  form(action=`/contents/${content.ContentID}/seasons`, method="POST")
-    .mb-3
-      label.form-label(for="seasonNumber") Season Number
-      input#seasonNumber.form-control(type="number", name="seasonNumber", required)
-    .mb-3
-      label.form-label(for="title") Title
-      input#title.form-control(type="text", name="title", required)
-    .mb-3
-      label.form-label(for="posterURL") Poster URL
-      input#posterURL.form-control(type="url", name="posterURL")
-    .mb-3
-      label.form-label(for="releaseDate") Release Date
-      input#releaseDate.form-control(type="date", name="releaseDate")
-    .mb-3
-      label.form-label(for="episodeCount") Episode Count
-      input#episodeCount.form-control(type="number", name="episodeCount")
-    .btn-group
-      button.btn.btn-primary(type="submit") Create
-      a.btn.btn-secondary(href=`/contents/${content.ContentID}`) Cancel 
+  .container.mt-4
+    .row.justify-content-center
+      .col-md-8
+        .card
+          .card-header
+            h3.mb-0 Add New Season
+          //- .card-body
+          form(action=`/contents/${content.ContentID}/seasons`, method="POST")
+            .mb-3
+              label.form-label(for="seasonNumber") Season Number
+              input#seasonNumber.form-control(type="number", name="seasonNumber", required, min="1")
+            
+            .mb-3
+              label.form-label(for="title") Title
+              input#title.form-control(type="text", name="title", required)
+            
+            .mb-3
+              label.form-label(for="posterURL") Poster URL
+              input#posterURL.form-control(type="url", name="posterURL")
+            
+            .mb-3
+              label.form-label(for="releaseDate") Release Date
+              input#releaseDate.form-control(type="date", name="releaseDate")
+            
+            .mb-3
+              label.form-label(for="episodeCount") Number of Episodes
+              input#episodeCount.form-control(type="number", name="episodeCount", min="1")
+            
+            .d-flex.gap-2
+              button.btn.btn-primary(type="submit") Save Season
+              a.btn.btn-secondary(href=`/contents/${content.ContentID}`) Back to Content 

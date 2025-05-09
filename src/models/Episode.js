@@ -29,7 +29,11 @@ class Episode {
                 .input("seasonId", sql.Int, episodeData.seasonId)
                 .input("episodeNumber", sql.Int, episodeData.episodeNumber)
                 .input("title", sql.VarChar, episodeData.title)
-                .input("description", sql.Text, episodeData.description)
+                .input(
+                    "description",
+                    sql.NVarChar(sql.MAX),
+                    episodeData.description
+                )
                 .input("duration", sql.Int, episodeData.duration)
                 .input("videoURL", sql.VarChar, episodeData.videoURL)
                 .input("thumbnailURL", sql.VarChar, episodeData.thumbnailURL)
@@ -52,13 +56,26 @@ class Episode {
 
     static async update(id, episodeData) {
         try {
+            // Lấy episode hiện tại để lấy seasonId nếu không có trong episodeData
+            const currentEpisode = await this.getById(id);
+            if (!currentEpisode) {
+                throw new Error("Episode not found");
+            }
+
+            // Sử dụng seasonId từ episodeData hoặc từ episode hiện tại
+            const seasonId = episodeData.seasonId || currentEpisode.SeasonID;
+
             await pool
                 .request()
                 .input("id", sql.Int, id)
-                .input("seasonId", sql.Int, episodeData.seasonId)
+                .input("seasonId", sql.Int, seasonId)
                 .input("episodeNumber", sql.Int, episodeData.episodeNumber)
                 .input("title", sql.VarChar, episodeData.title)
-                .input("description", sql.Text, episodeData.description)
+                .input(
+                    "description",
+                    sql.NVarChar(sql.MAX),
+                    episodeData.description
+                )
                 .input("duration", sql.Int, episodeData.duration)
                 .input("videoURL", sql.VarChar, episodeData.videoURL)
                 .input("thumbnailURL", sql.VarChar, episodeData.thumbnailURL)
@@ -86,6 +103,25 @@ class Episode {
                 .request()
                 .input("id", sql.Int, id)
                 .query("DELETE FROM Episodes WHERE EpisodeID = @id");
+            return true;
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    static async getCount() {
+        const result = await pool
+            .request()
+            .query("SELECT COUNT(*) AS count FROM Episodes");
+        return result.recordset[0].count;
+    }
+
+    static async deleteBySeasonId(seasonId) {
+        try {
+            await pool
+                .request()
+                .input("seasonId", sql.Int, seasonId)
+                .query("DELETE FROM Episodes WHERE SeasonID = @seasonId");
             return true;
         } catch (err) {
             throw err;

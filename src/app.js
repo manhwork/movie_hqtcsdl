@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const methodOverride = require("method-override");
 const path = require("path");
 const { poolConnect } = require("./config/database");
+const flash = require("connect-flash");
 
 const app = express();
 
@@ -24,13 +25,25 @@ app.use(
     })
 );
 
+// Cấu hình flash messages
+app.use(flash());
+
+// Middleware để truyền flash messages vào tất cả các views
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash("success_msg");
+    res.locals.error_msg = req.flash("error_msg");
+    next();
+});
+
 // Routes
 const actorRoutes = require("./routes/actorRoutes");
 const directorRoutes = require("./routes/directorRoutes");
 const contentRoutes = require("./routes/contentRoutes");
 const seasonRoutes = require("./routes/seasonRoutes");
 const episodeRoutes = require("./routes/episodeRoutes");
+const dashboardRoutes = require("./routes/dashboard");
 
+app.use("/dashboard", dashboardRoutes);
 app.use("/actors", actorRoutes);
 app.use("/directors", directorRoutes);
 app.use("/contents", contentRoutes);

@@ -1,26 +1,41 @@
 extends ../layout
 
 block content
-  .d-flex.justify-content-between.align-items-center.mb-4
-    h1 Actors
-    a.btn.btn-primary(href="/actors/create") Add New Actor
+  .page-header.d-flex.justify-content-between.align-items-center
+    h1.mb-0 Actors
+    a.btn.btn-primary(href="/actors/create")
+      i.fas.fa-plus.me-2
+      | Add New Actor
 
-  .row
+  .row.g-4
     each actor in actors
-      .col-md-4.mb-4
-        .card
-          if actor.PhotoURL
-            img.card-img-top(src=actor.PhotoURL, alt=actor.Name)
+      .col-md-4.col-lg-3
+        .actor-card.card
+          .card-img-container
+            if actor.PhotoURL
+              img.card-img-top(src=actor.PhotoURL, alt=actor.Name)
+            else
+              .no-image-placeholder
+                i.fas.fa-user.fa-3x
           .card-body
             h5.card-title= actor.Name
             if actor.OriginalName
-              p.card-text Original Name: #{actor.OriginalName}
-            if actor.Nationality
-              p.card-text Nationality: #{actor.Nationality}
-            if actor.BirthDate
-              p.card-text Birth Date: #{new Date(actor.BirthDate).toLocaleDateString()}
-            .btn-group
-              a.btn.btn-info(href=`/actors/${actor.ActorID}`) View
-              a.btn.btn-warning(href=`/actors/${actor.ActorID}/edit`) Edit
+              p.card-text.text-muted= actor.OriginalName
+            .card-text
+              if actor.Nationality
+                span.badge.bg-primary.me-2= actor.Nationality
+              if actor.BirthDate
+                span.text-muted
+                  i.far.fa-calendar-alt.me-1
+                  | #{new Date(actor.BirthDate).toLocaleDateString()}
+            .btn-group.w-100.mt-3
+              a.btn.btn-outline-info.btn-sm(href=`/actors/${actor.ActorID}`)
+                i.fas.fa-eye.me-1
+                | View
+              a.btn.btn-outline-warning.btn-sm(href=`/actors/${actor.ActorID}/edit`)
+                i.fas.fa-edit.me-1
+                | Edit
               form.d-inline(action=`/actors/${actor.ActorID}?_method=DELETE`, method="POST")
-                button.btn.btn-danger(type="submit") Delete 
+                button.btn.btn-outline-danger.btn-sm(type="submit")
+                  i.fas.fa-trash.me-1
+                  | Delete 

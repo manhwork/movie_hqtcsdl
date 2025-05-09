@@ -30,7 +30,7 @@ class Director {
                 .request()
                 .input("name", sql.VarChar, directorData.name)
                 .input("originalName", sql.VarChar, directorData.originalName)
-                .input("bio", sql.Text, directorData.bio)
+                .input("bio", sql.NVarChar(sql.MAX), directorData.bio)
                 .input("birthDate", sql.Date, directorData.birthDate)
                 .input("nationality", sql.VarChar, directorData.nationality)
                 .input("photoURL", sql.VarChar, directorData.photoURL).query(`
@@ -51,7 +51,7 @@ class Director {
                 .input("id", sql.Int, id)
                 .input("name", sql.VarChar, directorData.name)
                 .input("originalName", sql.VarChar, directorData.originalName)
-                .input("bio", sql.Text, directorData.bio)
+                .input("bio", sql.NVarChar(sql.MAX), directorData.bio)
                 .input("birthDate", sql.Date, directorData.birthDate)
                 .input("nationality", sql.VarChar, directorData.nationality)
                 .input("photoURL", sql.VarChar, directorData.photoURL).query(`
@@ -80,6 +80,13 @@ class Director {
         } catch (err) {
             throw err;
         }
+    }
+
+    static async getCount() {
+        const result = await pool
+            .request()
+            .query("SELECT COUNT(*) AS count FROM Directors");
+        return result.recordset[0].count;
     }
 }
 

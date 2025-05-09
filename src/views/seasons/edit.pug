@@ -1,23 +1,36 @@
 extends ../layout
 
 block content
-  h1 Edit Season
-  form(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}?_method=PUT`, method="POST")
-    .mb-3
-      label.form-label(for="seasonNumber") Season Number
-      input#seasonNumber.form-control(type="number", name="seasonNumber", value=season.SeasonNumber, required)
-    .mb-3
-      label.form-label(for="title") Title
-      input#title.form-control(type="text", name="title", value=season.Title, required)
-    .mb-3
-      label.form-label(for="posterURL") Poster URL
-      input#posterURL.form-control(type="url", name="posterURL", value=season.PosterURL)
-    .mb-3
-      label.form-label(for="releaseDate") Release Date
-      input#releaseDate.form-control(type="date", name="releaseDate", value=season.ReleaseDate ? new Date(season.ReleaseDate).toISOString().split('T')[0] : '')
-    .mb-3
-      label.form-label(for="episodeCount") Episode Count
-      input#episodeCount.form-control(type="number", name="episodeCount", value=season.EpisodeCount)
-    .btn-group
-      button.btn.btn-primary(type="submit") Update
-      a.btn.btn-secondary(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}`) Cancel 
+  .container.mt-4
+    .row.justify-content-center
+      .col-md-8
+        .card
+          .card-header
+            h3.mb-0 Edit Season
+          form(action=`/contents/${season.ContentID}/seasons/${season.SeasonID}?_method=PUT`, method="POST")
+            input(type="hidden", name="contentId", value=season.ContentID)
+            .mb-3
+              label.form-label(for="seasonNumber") Season Number
+              input#seasonNumber.form-control(type="number", name="seasonNumber", value=season.SeasonNumber, required, min="1")
+            
+            .mb-3
+              label.form-label(for="title") Title
+              input#title.form-control(type="text", name="title", value=season.Title, required)
+            
+            .mb-3
+              label.form-label(for="posterURL") Poster URL
+              input#posterURL.form-control(type="url", name="posterURL", value=season.PosterURL)
+            
+            .mb-3
+              label.form-label(for="releaseDate") Release Date
+              input#releaseDate.form-control(type="date", name="releaseDate", value=season.ReleaseDate ? new Date(season.ReleaseDate).toISOString().split('T')[0] : '')
+            
+            .mb-3
+              label.form-label(for="episodeCount") Number of Episodes
+              input#episodeCount.form-control(type="number", name="episodeCount", value=season.EpisodeCount, min="1")
+            
+            .d-flex.gap-2
+              button.btn.btn-primary(type="submit") Update Season
+              a.btn.btn-secondary(href=`/contents/${season.ContentID}`) Back to Content
+            
+            //- a.btn.btn-secondary(href=`/contents/${contentId}`) Back to Content 

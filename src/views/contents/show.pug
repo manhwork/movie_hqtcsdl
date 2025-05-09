@@ -4,7 +4,10 @@ block content
   .row
     .col-md-4
       if content.PosterURL
-        img.img-fluid.rounded(src=content.PosterURL, alt=content.Title)
+        img.img-fluid.rounded.content-poster-fixed(src=content.PosterURL, alt=content.Title)
+      else
+        .no-image-placeholder.rounded(style='height:350px')
+          i.fas.fa-film.fa-5x
     .col-md-8
       h1= content.Title
       if content.OriginalTitle
@@ -28,7 +31,7 @@ block content
         a.btn.btn-warning(href=`/contents/${content.ContentID}/edit`) Edit
         form.d-inline(action=`/contents/${content.ContentID}?_method=DELETE`, method="POST")
           button.btn.btn-danger(type="submit") Delete
-        a.btn.btn-secondary(href="/contents") Back to List
+        //- a.btn.btn-secondary(href="/contents") Back to List
 
   if content.Type === 'tvshow'
     .mt-4
@@ -37,9 +40,13 @@ block content
       .row
         each season in seasons
           .col-md-4.mb-4
-            .card
-              if season.PosterURL
-                img.card-img-top(src=season.PosterURL, alt=season.Title)
+            .card.h-100
+              .card-img-container
+                if season.PosterURL
+                  img.card-img-top(src=season.PosterURL, alt=season.Title)
+                else
+                  .no-image-placeholder
+                    i.fas.fa-image
               .card-body
                 h5.card-title= season.Title
                 p.card-text Season #{season.SeasonNumber}

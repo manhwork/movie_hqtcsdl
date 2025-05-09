@@ -3,26 +3,24 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport", content="width=device-width, initial-scale=1.0")
-    title #{title} - Movie Database
+    title Movie Management System
     link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css")
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css")
     link(rel="stylesheet", href="/css/style.css")
   body
-    nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-      .container
-        a.navbar-brand(href="/") Movie Database
-        button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarNav")
-          span.navbar-toggler-icon
-        #navbarNav.collapse.navbar-collapse
-          ul.navbar-nav
-            li.nav-item
-              a.nav-link(href="/contents") Contents
-            li.nav-item
-              a.nav-link(href="/actors") Actors
-            li.nav-item
-              a.nav-link(href="/directors") Directors
-
+    include partials/navbar
     .container.mt-4
+      // Flash Messages
+      if success_msg && success_msg.length
+        .alert.alert-success.alert-dismissible.fade.show(role='alert')
+          = success_msg
+          button.btn-close(type='button', data-bs-dismiss='alert', aria-label='Close')
+      if error_msg && error_msg.length
+        .alert.alert-danger.alert-dismissible.fade.show(role='alert')
+          = error_msg
+          button.btn-close(type='button', data-bs-dismiss='alert', aria-label='Close')
+      
       block content
 
     script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js")
-    script(src="/js/main.js") 
+    block scripts 

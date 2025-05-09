@@ -2,7 +2,8 @@ extends ../layout
 
 block content
   h1 Edit Episode
-  form(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=PUT`, method="POST")
+  form(action=`/contents/${season.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=PUT`, method="POST")
+    input(type="hidden", name="seasonId", value=season.SeasonID)
     .mb-3
       label.form-label(for="episodeNumber") Episode Number
       input#episodeNumber.form-control(type="number", name="episodeNumber", value=episode.EpisodeNumber, required)
@@ -26,4 +27,4 @@ block content
       input#releaseDate.form-control(type="date", name="releaseDate", value=episode.ReleaseDate ? new Date(episode.ReleaseDate).toISOString().split('T')[0] : '')
     .btn-group
       button.btn.btn-primary(type="submit") Update
-      a.btn.btn-secondary(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}`) Cancel 
+      a.btn.btn-secondary(href=`/contents/${season.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}`) Cancel 

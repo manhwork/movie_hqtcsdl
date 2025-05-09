@@ -28,7 +28,11 @@ class Content {
                 .request()
                 .input("title", sql.VarChar, contentData.title)
                 .input("originalTitle", sql.VarChar, contentData.originalTitle)
-                .input("description", sql.Text, contentData.description)
+                .input(
+                    "description",
+                    sql.NVarChar(sql.MAX),
+                    contentData.description
+                )
                 .input("type", sql.VarChar, contentData.type)
                 .input("releaseDate", sql.Date, contentData.releaseDate)
                 .input("rating", sql.Float, contentData.rating)
@@ -66,7 +70,11 @@ class Content {
                 .input("id", sql.Int, id)
                 .input("title", sql.VarChar, contentData.title)
                 .input("originalTitle", sql.VarChar, contentData.originalTitle)
-                .input("description", sql.Text, contentData.description)
+                .input(
+                    "description",
+                    sql.NVarChar(sql.MAX),
+                    contentData.description
+                )
                 .input("type", sql.VarChar, contentData.type)
                 .input("releaseDate", sql.Date, contentData.releaseDate)
                 .input("rating", sql.Float, contentData.rating)
@@ -142,6 +150,22 @@ class Content {
         } catch (err) {
             throw err;
         }
+    }
+
+    static async getCount() {
+        const result = await pool
+            .request()
+            .query("SELECT COUNT(*) AS count FROM Content");
+        return result.recordset[0].count;
+    }
+
+    static async getLatest(limit) {
+        const result = await pool
+            .request()
+            .query(
+                `SELECT TOP (${limit}) * FROM Content ORDER BY ReleaseDate DESC`
+            );
+        return result.recordset;
     }
 }
 

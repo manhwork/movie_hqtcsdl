@@ -1,0 +1,156 @@
+extends layout
+
+block header
+  | Dashboard Tổng quan
+
+block content
+  .dashboard-container
+    .row.g-4.mb-4
+      .col-md-3.col-6
+        .dashboard-card.bg-gradient-primary.shadow-sm
+          .d-flex.align-items-center.mb-2
+            i.bi.bi-collection-play.display-5.me-3.text-white
+            .fs-3.text-white= (stats && stats.contents) || 0
+          .fw-bold.text-white.fs-5 Nội dung
+      .col-md-3.col-6
+        .dashboard-card.bg-gradient-info.shadow-sm
+          .d-flex.align-items-center.mb-2
+            i.bi.bi-layers.display-5.me-3.text-white
+            .fs-3.text-white= (stats && stats.seasons) || 0
+          .fw-bold.text-white.fs-5 Season
+      .col-md-3.col-6
+        .dashboard-card.bg-gradient-success.shadow-sm
+          .d-flex.align-items-center.mb-2
+            i.bi.bi-film.display-5.me-3.text-white
+            .fs-3.text-white= (stats && stats.episodes) || 0
+          .fw-bold.text-white.fs-5 Tập phim
+      .col-md-3.col-6
+        .dashboard-card.bg-gradient-warning.shadow-sm
+          .d-flex.align-items-center.mb-2
+            i.bi.bi-person-video3.display-5.me-3.text-white
+            .fs-3.text-white= (stats && stats.actors) || 0
+          .fw-bold.text-white.fs-5 Diễn viên
+      .col-md-3.col-6
+        .dashboard-card.bg-gradient-danger.shadow-sm
+          .d-flex.align-items-center.mb-2
+            i.bi.bi-person-badge.display-5.me-3.text-white
+            .fs-3.text-white= (stats && stats.directors) || 0
+          .fw-bold.text-white.fs-5 Đạo diễn
+    hr
+    .row
+      .col-lg-7.mb-4
+        h4 Biểu đồ tổng quan
+        canvas#mainChart(style="width:100%;max-width:600px;height:320px;")
+      .col-lg-5.mb-4
+        h4 Top 5 nội dung mới nhất
+        table.table.table-hover.mt-3
+          thead
+            tr
+              th Tên phim
+              th Loại
+              th Ngày phát hành
+          tbody#latestContents
+        h4.mt-4 Top 5 diễn viên nổi bật
+        table.table.table-hover.mt-3
+          thead
+            tr
+              th Tên diễn viên
+              th Số phim
+          tbody#topActors
+    hr
+    .row.mt-4
+      .col-12
+        h4 Thống kê nhanh
+        ul.list-group.list-group-flush
+          li.list-group-item Tổng số nội dung: #{(stats && stats.contents) || 0}
+          li.list-group-item Tổng số season: #{(stats && stats.seasons) || 0}
+          li.list-group-item Tổng số tập phim: #{(stats && stats.episodes) || 0}
+          li.list-group-item Tổng số diễn viên: #{(stats && stats.actors) || 0}
+          li.list-group-item Tổng số đạo diễn: #{(stats && stats.directors) || 0}
+    // CSS riêng cho dashboard
+    style.
+      .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .dashboard-card {
+        border-radius: 18px;
+        padding: 2rem 1.5rem 1.2rem 1.5rem;
+        min-height: 140px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        box-shadow: 0 4px 24px 0 rgba(37,99,235,0.08), 0 1.5px 6px 0 rgba(30,41,59,0.06);
+      }
+      .bg-gradient-primary {
+        background: linear-gradient(90deg, #2563eb 0%, #38bdf8 100%) !important;
+      }
+      .bg-gradient-info {
+        background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%) !important;
+      }
+      .bg-gradient-success {
+        background: linear-gradient(90deg, #22c55e 0%, #2563eb 100%) !important;
+      }
+      .bg-gradient-warning {
+        background: linear-gradient(90deg, #f59e42 0%, #fbbf24 100%) !important;
+      }
+      .bg-gradient-danger {
+        background: linear-gradient(90deg, #ef4444 0%, #f87171 100%) !important;
+      }
+      @media (max-width: 768px) {
+        .dashboard-card {
+          padding: 1.2rem 0.7rem 1rem 0.7rem;
+          min-height: 100px;
+        }
+      }
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script.
+      document.addEventListener('DOMContentLoaded', async () => {
+        const res = await fetch('/api/dashboard-stats');
+        const data = await res.json();
+        // Vẽ biểu đồ
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Nội dung', 'Season', 'Tập phim', 'Diễn viên', 'Đạo diễn'],
+            datasets: [{
+              label: 'Số lượng',
+              data: [
+                data.stats.contents,
+                data.stats.seasons,
+                data.stats.episodes,
+                data.stats.actors,
+                data.stats.directors
+              ],
+              backgroundColor: [
+                '#2563eb', '#06b6d4', '#22c55e', '#f59e42', '#ef4444'
+              ]
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: { legend: { display: false } }
+          }
+        });
+        // Đổ bảng nội dung mới nhất
+        let html = '';
+        data.latestContents.forEach(item => {
+          html += `<tr>
+            <td>${item.Title}</td>
+            <td>${item.Type}</td>
+            <td>${new Date(item.ReleaseDate).toLocaleDateString()}</td>
+          </tr>`;
+        });
+        document.getElementById('latestContents').innerHTML = html;
+        // Đổ bảng diễn viên nổi bật
+        html = '';
+        data.topActors.forEach(item => {
+          html += `<tr>
+            <td>${item.Name}</td>
+            <td>${item.MovieCount}</td>
+          </tr>`;
+        });
+        document.getElementById('topActors').innerHTML = html;
+      }); 

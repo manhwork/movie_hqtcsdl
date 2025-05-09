@@ -1,1 +1,46 @@
- 
+extends ../layout
+
+block content
+  .container
+    .row.justify-content-center
+      .col-md-8
+        .card
+          .card-header
+            h4.mb-0 Add New Episode for Season #{season.SeasonNumber}
+          .card-body
+            form(action=`/seasons/${season.SeasonID}/episodes`, method="POST")
+              .mb-3
+                label.form-label(for="episodeNumber") Episode Number
+                input#episodeNumber.form-control(type="number", name="episodeNumber", required, min="1")
+              
+              .mb-3
+                label.form-label(for="title") Title
+                input#title.form-control(type="text", name="title", required)
+              
+              .mb-3
+                label.form-label(for="description") Description
+                textarea#description.form-control(name="description", rows="3")
+              
+              .mb-3
+                label.form-label(for="duration") Duration (minutes)
+                input#duration.form-control(type="number", name="duration", min="1")
+              
+              .mb-3
+                label.form-label(for="videoURL") Video URL
+                input#videoURL.form-control(type="url", name="videoURL")
+              
+              .mb-3
+                label.form-label(for="thumbnailURL") Thumbnail URL
+                input#thumbnailURL.form-control(type="url", name="thumbnailURL")
+              
+              .mb-3
+                label.form-label(for="releaseDate") Release Date
+                input#releaseDate.form-control(type="date", name="releaseDate")
+              
+              .d-flex.justify-content-between
+                //- a.btn.btn-secondary(href=`/contents/${season.ContentID}`)
+                //-   i.fas.fa-arrow-left.me-2
+                //-   | Back to Content
+                button.btn.btn-primary(type="submit")
+                  i.fas.fa-save.me-2
+                  | Save Episode 

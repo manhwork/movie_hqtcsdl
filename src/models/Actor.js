@@ -28,7 +28,7 @@ class Actor {
                 .request()
                 .input("name", sql.VarChar, actorData.name)
                 .input("originalName", sql.VarChar, actorData.originalName)
-                .input("bio", sql.Text, actorData.bio)
+                .input("bio", sql.NVarChar(sql.MAX), actorData.bio)
                 .input("birthDate", sql.Date, actorData.birthDate)
                 .input("nationality", sql.VarChar, actorData.nationality)
                 .input("photoURL", sql.VarChar, actorData.photoURL).query(`
@@ -49,7 +49,7 @@ class Actor {
                 .input("id", sql.Int, id)
                 .input("name", sql.VarChar, actorData.name)
                 .input("originalName", sql.VarChar, actorData.originalName)
-                .input("bio", sql.Text, actorData.bio)
+                .input("bio", sql.NVarChar(sql.MAX), actorData.bio)
                 .input("birthDate", sql.Date, actorData.birthDate)
                 .input("nationality", sql.VarChar, actorData.nationality)
                 .input("photoURL", sql.VarChar, actorData.photoURL).query(`
@@ -78,6 +78,24 @@ class Actor {
         } catch (err) {
             throw err;
         }
+    }
+
+    static async getCount() {
+        const result = await pool
+            .request()
+            .query("SELECT COUNT(*) AS count FROM Actors");
+        return result.recordset[0].count;
+    }
+
+    static async getTop(limit) {
+        const result = await pool.request().query(`
+            SELECT TOP (${limit}) A.*, COUNT(CA.ContentID) AS MovieCount
+            FROM Actors A
+            LEFT JOIN ContentActors CA ON A.ActorID = CA.ActorID
+            GROUP BY A.ActorID, A.Name, A.Bio, A.PhotoURL
+            ORDER BY MovieCount DESC
+        `);
+        return result.recordset;
     }
 }
 
