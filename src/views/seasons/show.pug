@@ -1,0 +1,41 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-4
+      if season.PosterURL
+        img.img-fluid.rounded(src=season.PosterURL, alt=season.Title)
+    .col-md-8
+      h1= season.Title
+      p Season #{season.SeasonNumber}
+      if season.ReleaseDate
+        p Release Date: #{new Date(season.ReleaseDate).toLocaleDateString()}
+      if season.EpisodeCount
+        p Episodes: #{season.EpisodeCount}
+      .btn-group
+        a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/edit`) Edit
+        form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}?_method=DELETE`, method="POST")
+          button.btn.btn-danger(type="submit") Delete
+        a.btn.btn-secondary(href=`/contents/${content.ContentID}`) Back to Content
+
+  .mt-4
+    h2 Episodes
+    a.btn.btn-primary.mb-3(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/create`) Add New Episode
+    .row
+      each episode in episodes
+        .col-md-4.mb-4
+          .card
+            if episode.ThumbnailURL
+              img.card-img-top(src=episode.ThumbnailURL, alt=episode.Title)
+            .card-body
+              h5.card-title= episode.Title
+              p.card-text Episode #{episode.EpisodeNumber}
+              if episode.Duration
+                p.card-text Duration: #{episode.Duration} minutes
+              if episode.ReleaseDate
+                p.card-text Release Date: #{new Date(episode.ReleaseDate).toLocaleDateString()}
+              .btn-group
+                a.btn.btn-info(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}`) View
+                a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}/edit`) Edit
+                form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=DELETE`, method="POST")
+                  button.btn.btn-danger(type="submit") Delete 

@@ -1,0 +1,54 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-4
+      if content.PosterURL
+        img.img-fluid.rounded(src=content.PosterURL, alt=content.Title)
+    .col-md-8
+      h1= content.Title
+      if content.OriginalTitle
+        p Original Title: #{content.OriginalTitle}
+      p Type: #{content.Type}
+      if content.ReleaseDate
+        p Release Date: #{new Date(content.ReleaseDate).toLocaleDateString()}
+      if content.Rating
+        p Rating: #{content.Rating}
+      if content.Description
+        p= content.Description
+      if content.Country
+        p Country: #{content.Country}
+      if content.Language
+        p Language: #{content.Language}
+      if content.Duration
+        p Duration: #{content.Duration} minutes
+      if content.Status
+        p Status: #{content.Status}
+      .btn-group
+        a.btn.btn-warning(href=`/contents/${content.ContentID}/edit`) Edit
+        form.d-inline(action=`/contents/${content.ContentID}?_method=DELETE`, method="POST")
+          button.btn.btn-danger(type="submit") Delete
+        a.btn.btn-secondary(href="/contents") Back to List
+
+  if content.Type === 'tvshow'
+    .mt-4
+      h2 Seasons
+      a.btn.btn-primary.mb-3(href=`/contents/${content.ContentID}/seasons/create`) Add New Season
+      .row
+        each season in seasons
+          .col-md-4.mb-4
+            .card
+              if season.PosterURL
+                img.card-img-top(src=season.PosterURL, alt=season.Title)
+              .card-body
+                h5.card-title= season.Title
+                p.card-text Season #{season.SeasonNumber}
+                if season.ReleaseDate
+                  p.card-text Release Date: #{new Date(season.ReleaseDate).toLocaleDateString()}
+                if season.EpisodeCount
+                  p.card-text Episodes: #{season.EpisodeCount}
+                .btn-group
+                  a.btn.btn-info(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}`) View
+                  a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/edit`) Edit
+                  form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}?_method=DELETE`, method="POST")
+                    button.btn.btn-danger(type="submit") Delete 

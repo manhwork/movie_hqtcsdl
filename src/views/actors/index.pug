@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Actors
+    a.btn.btn-primary(href="/actors/create") Add New Actor
+
+  .row
+    each actor in actors
+      .col-md-4.mb-4
+        .card
+          if actor.PhotoURL
+            img.card-img-top(src=actor.PhotoURL, alt=actor.Name)
+          .card-body
+            h5.card-title= actor.Name
+            if actor.OriginalName
+              p.card-text Original Name: #{actor.OriginalName}
+            if actor.Nationality
+              p.card-text Nationality: #{actor.Nationality}
+            if actor.BirthDate
+              p.card-text Birth Date: #{new Date(actor.BirthDate).toLocaleDateString()}
+            .btn-group
+              a.btn.btn-info(href=`/actors/${actor.ActorID}`) View
+              a.btn.btn-warning(href=`/actors/${actor.ActorID}/edit`) Edit
+              form.d-inline(action=`/actors/${actor.ActorID}?_method=DELETE`, method="POST")
+                button.btn.btn-danger(type="submit") Delete 

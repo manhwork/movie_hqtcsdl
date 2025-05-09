@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-4
+      if director.PhotoURL
+        img.img-fluid.rounded(src=director.PhotoURL, alt=director.Name)
+    .col-md-8
+      h1= director.Name
+      if director.OriginalName
+        p Original Name: #{director.OriginalName}
+      if director.Nationality
+        p Nationality: #{director.Nationality}
+      if director.BirthDate
+        p Birth Date: #{new Date(director.BirthDate).toLocaleDateString()}
+      if director.Bio
+        p= director.Bio
+      .btn-group
+        a.btn.btn-warning(href=`/directors/${director.DirectorID}/edit`) Edit
+        form.d-inline(action=`/directors/${director.DirectorID}?_method=DELETE`, method="POST")
+          button.btn.btn-danger(type="submit") Delete
+        a.btn.btn-secondary(href="/directors") Back to List 

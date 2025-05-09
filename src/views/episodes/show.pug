@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-4
+      if episode.ThumbnailURL
+        img.img-fluid.rounded(src=episode.ThumbnailURL, alt=episode.Title)
+    .col-md-8
+      h1= episode.Title
+      p Episode #{episode.EpisodeNumber}
+      if episode.Description
+        p= episode.Description
+      if episode.Duration
+        p Duration: #{episode.Duration} minutes
+      if episode.ReleaseDate
+        p Release Date: #{new Date(episode.ReleaseDate).toLocaleDateString()}
+      if episode.VideoURL
+        .ratio.ratio-16x9.mb-3
+          video(controls)
+            source(src=episode.VideoURL, type="video/mp4")
+            | Your browser does not support the video tag.
+      .btn-group
+        a.btn.btn-warning(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}/edit`) Edit
+        form.d-inline(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=DELETE`, method="POST")
+          button.btn.btn-danger(type="submit") Delete
+        a.btn.btn-secondary(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}`) Back to Season 

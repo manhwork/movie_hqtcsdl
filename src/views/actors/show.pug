@@ -1,0 +1,22 @@
+extends ../layout
+
+block content
+  .row
+    .col-md-4
+      if actor.PhotoURL
+        img.img-fluid.rounded(src=actor.PhotoURL, alt=actor.Name)
+    .col-md-8
+      h1= actor.Name
+      if actor.OriginalName
+        p Original Name: #{actor.OriginalName}
+      if actor.Nationality
+        p Nationality: #{actor.Nationality}
+      if actor.BirthDate
+        p Birth Date: #{new Date(actor.BirthDate).toLocaleDateString()}
+      if actor.Bio
+        p= actor.Bio
+      .btn-group
+        a.btn.btn-warning(href=`/actors/${actor.ActorID}/edit`) Edit
+        form.d-inline(action=`/actors/${actor.ActorID}?_method=DELETE`, method="POST")
+          button.btn.btn-danger(type="submit") Delete
+        a.btn.btn-secondary(href="/actors") Back to List 

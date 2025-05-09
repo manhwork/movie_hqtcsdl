@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+  h1 Edit Actor
+  form(action=`/actors/${actor.ActorID}?_method=PUT`, method="POST")
+    .mb-3
+      label.form-label(for="name") Name
+      input#name.form-control(type="text", name="name", value=actor.Name, required)
+    .mb-3
+      label.form-label(for="originalName") Original Name
+      input#originalName.form-control(type="text", name="originalName", value=actor.OriginalName)
+    .mb-3
+      label.form-label(for="bio") Bio
+      textarea#bio.form-control(name="bio", rows="3")= actor.Bio
+    .mb-3
+      label.form-label(for="birthDate") Birth Date
+      input#birthDate.form-control(type="date", name="birthDate", value=actor.BirthDate ? new Date(actor.BirthDate).toISOString().split('T')[0] : '')
+    .mb-3
+      label.form-label(for="nationality") Nationality
+      input#nationality.form-control(type="text", name="nationality", value=actor.Nationality)
+    .mb-3
+      label.form-label(for="photoURL") Photo URL
+      input#photoURL.form-control(type="url", name="photoURL", value=actor.PhotoURL)
+    .btn-group
+      button.btn.btn-primary(type="submit") Update
+      a.btn.btn-secondary(href=`/actors/${actor.ActorID}`) Cancel 

@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  .d-flex.justify-content-between.align-items-center.mb-4
+    h1 Contents
+    a.btn.btn-primary(href="/contents/create") Add New Content
+
+  .row
+    each content in contents
+      .col-md-4.mb-4
+        .card
+          if content.PosterURL
+            img.card-img-top(src=content.PosterURL, alt=content.Title)
+          .card-body
+            h5.card-title= content.Title
+            if content.OriginalTitle
+              p.card-text Original Title: #{content.OriginalTitle}
+            p.card-text Type: #{content.Type}
+            if content.ReleaseDate
+              p.card-text Release Date: #{new Date(content.ReleaseDate).toLocaleDateString()}
+            if content.Rating
+              p.card-text Rating: #{content.Rating}
+            .btn-group
+              a.btn.btn-info(href=`/contents/${content.ContentID}`) View
+              a.btn.btn-warning(href=`/contents/${content.ContentID}/edit`) Edit
+              form.d-inline(action=`/contents/${content.ContentID}?_method=DELETE`, method="POST")
+                button.btn.btn-danger(type="submit") Delete 

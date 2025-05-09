@@ -1,0 +1,58 @@
+extends ../layout
+
+block content
+  h1 Edit Content
+  form(action=`/contents/${content.ContentID}?_method=PUT`, method="POST")
+    .mb-3
+      label.form-label(for="title") Title
+      input#title.form-control(type="text", name="title", value=content.Title, required)
+    .mb-3
+      label.form-label(for="originalTitle") Original Title
+      input#originalTitle.form-control(type="text", name="originalTitle", value=content.OriginalTitle)
+    .mb-3
+      label.form-label(for="description") Description
+      textarea#description.form-control(name="description", rows="3")= content.Description
+    .mb-3
+      label.form-label(for="type") Type
+      select#type.form-control(name="type", required)
+        option(value="movie", selected=content.Type === 'movie') Movie
+        option(value="tvshow", selected=content.Type === 'tvshow') TV Show
+    .mb-3
+      label.form-label(for="releaseDate") Release Date
+      input#releaseDate.form-control(type="date", name="releaseDate", value=content.ReleaseDate ? new Date(content.ReleaseDate).toISOString().split('T')[0] : '')
+    .mb-3
+      label.form-label(for="rating") Rating
+      input#rating.form-control(type="number", name="rating", step="0.1", min="0", max="10", value=content.Rating)
+    .mb-3
+      label.form-label(for="posterURL") Poster URL
+      input#posterURL.form-control(type="url", name="posterURL", value=content.PosterURL)
+    .mb-3
+      label.form-label(for="backdropURL") Backdrop URL
+      input#backdropURL.form-control(type="url", name="backdropURL", value=content.BackdropURL)
+    .mb-3
+      label.form-label(for="trailerURL") Trailer URL
+      input#trailerURL.form-control(type="url", name="trailerURL", value=content.TrailerURL)
+    .mb-3
+      label.form-label(for="videoURL") Video URL
+      input#videoURL.form-control(type="url", name="videoURL", value=content.VideoURL)
+    .mb-3
+      label.form-label(for="duration") Duration (minutes)
+      input#duration.form-control(type="number", name="duration", value=content.Duration)
+    .mb-3
+      label.form-label(for="numberOfSeasons") Number of Seasons
+      input#numberOfSeasons.form-control(type="number", name="numberOfSeasons", value=content.NumberOfSeasons)
+    .mb-3
+      label.form-label(for="status") Status
+      select#status.form-control(name="status")
+        option(value="ongoing", selected=content.Status === 'ongoing') Ongoing
+        option(value="completed", selected=content.Status === 'completed') Completed
+        option(value="canceled", selected=content.Status === 'canceled') Canceled
+    .mb-3
+      label.form-label(for="country") Country
+      input#country.form-control(type="text", name="country", value=content.Country)
+    .mb-3
+      label.form-label(for="language") Language
+      input#language.form-control(type="text", name="language", value=content.Language)
+    .btn-group
+      button.btn.btn-primary(type="submit") Update
+      a.btn.btn-secondary(href=`/contents/${content.ContentID}`) Cancel 

@@ -1,0 +1,228 @@
+const Content = require("../models/Content");
+const Season = require("../models/Season");
+const Episode = require("../models/Episode");
+
+exports.getAllContents = async (req, res) => {
+    try {
+        const contents = await Content.getAll();
+        res.render("contents/index", { contents });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.getContentById = async (req, res) => {
+    try {
+        const content = await Content.getById(req.params.id);
+        if (!content) {
+            return res
+                .status(404)
+                .render("error", { message: "Content not found" });
+        }
+
+        let seasons = [];
+        if (content.Type === "tvshow") {
+            seasons = await Content.getSeasons(req.params.id);
+        }
+
+        res.render("contents/show", { content, seasons });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.createContentForm = (req, res) => {
+    res.render("contents/create");
+};
+
+exports.createContent = async (req, res) => {
+    try {
+        const contentId = await Content.create(req.body);
+        res.redirect(`/contents/${contentId}`);
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateContentForm = async (req, res) => {
+    try {
+        const content = await Content.getById(req.params.id);
+        if (!content) {
+            return res
+                .status(404)
+                .render("error", { message: "Content not found" });
+        }
+        res.render("contents/edit", { content });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateContent = async (req, res) => {
+    try {
+        await Content.update(req.params.id, req.body);
+        res.redirect(`/contents/${req.params.id}`);
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.deleteContent = async (req, res) => {
+    try {
+        await Content.delete(req.params.id);
+        res.redirect("/contents");
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+// Season management
+exports.getSeasonById = async (req, res) => {
+    try {
+        const season = await Season.getById(req.params.seasonId);
+        if (!season) {
+            return res
+                .status(404)
+                .render("error", { message: "Season not found" });
+        }
+        const episodes = await Content.getEpisodes(req.params.seasonId);
+        res.render("seasons/show", { season, episodes });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.createSeasonForm = async (req, res) => {
+    try {
+        const content = await Content.getById(req.params.id);
+        if (!content) {
+            return res
+                .status(404)
+                .render("error", { message: "Content not found" });
+        }
+        res.render("seasons/create", { content });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.createSeason = async (req, res) => {
+    try {
+        req.body.contentId = req.params.id;
+        const seasonId = await Season.create(req.body);
+        res.redirect(`/contents/${req.params.id}/seasons/${seasonId}`);
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateSeasonForm = async (req, res) => {
+    try {
+        const season = await Season.getById(req.params.seasonId);
+        if (!season) {
+            return res
+                .status(404)
+                .render("error", { message: "Season not found" });
+        }
+        res.render("seasons/edit", { season });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateSeason = async (req, res) => {
+    try {
+        await Season.update(req.params.seasonId, req.body);
+        res.redirect(
+            `/contents/${req.params.id}/seasons/${req.params.seasonId}`
+        );
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.deleteSeason = async (req, res) => {
+    try {
+        await Season.delete(req.params.seasonId);
+        res.redirect(`/contents/${req.params.id}`);
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+// Episode management
+exports.getEpisodeById = async (req, res) => {
+    try {
+        const episode = await Episode.getById(req.params.episodeId);
+        if (!episode) {
+            return res
+                .status(404)
+                .render("error", { message: "Episode not found" });
+        }
+        res.render("episodes/show", { episode });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.createEpisodeForm = async (req, res) => {
+    try {
+        const season = await Season.getById(req.params.seasonId);
+        if (!season) {
+            return res
+                .status(404)
+                .render("error", { message: "Season not found" });
+        }
+        res.render("episodes/create", { season });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.createEpisode = async (req, res) => {
+    try {
+        req.body.seasonId = req.params.seasonId;
+        const episodeId = await Episode.create(req.body);
+        res.redirect(
+            `/contents/${req.params.id}/seasons/${req.params.seasonId}/episodes/${episodeId}`
+        );
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateEpisodeForm = async (req, res) => {
+    try {
+        const episode = await Episode.getById(req.params.episodeId);
+        if (!episode) {
+            return res
+                .status(404)
+                .render("error", { message: "Episode not found" });
+        }
+        res.render("episodes/edit", { episode });
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.updateEpisode = async (req, res) => {
+    try {
+        await Episode.update(req.params.episodeId, req.body);
+        res.redirect(
+            `/contents/${req.params.id}/seasons/${req.params.seasonId}/episodes/${req.params.episodeId}`
+        );
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};
+
+exports.deleteEpisode = async (req, res) => {
+    try {
+        await Episode.delete(req.params.episodeId);
+        res.redirect(
+            `/contents/${req.params.id}/seasons/${req.params.seasonId}`
+        );
+    } catch (err) {
+        res.status(500).render("error", { message: err.message });
+    }
+};

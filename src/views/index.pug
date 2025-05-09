@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  .jumbotron
+    h1.display-4 Welcome to Movie Database
+    p.lead Manage your movies and TV shows in one place
+    hr.my-4
+    p Choose what you want to manage:
+    .row
+      .col-md-4
+        .card.mb-4
+          .card-body
+            h5.card-title Contents
+            p.card-text Manage movies and TV shows
+            a.btn.btn-primary(href="/contents") Go to Contents
+      .col-md-4
+        .card.mb-4
+          .card-body
+            h5.card-title Actors
+            p.card-text Manage actors and their information
+            a.btn.btn-primary(href="/actors") Go to Actors
+      .col-md-4
+        .card.mb-4
+          .card-body
+            h5.card-title Directors
+            p.card-text Manage directors and their information
+            a.btn.btn-primary(href="/directors") Go to Directors 

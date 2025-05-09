@@ -1,0 +1,29 @@
+extends ../layout
+
+block content
+  h1 Edit Episode
+  form(action=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}?_method=PUT`, method="POST")
+    .mb-3
+      label.form-label(for="episodeNumber") Episode Number
+      input#episodeNumber.form-control(type="number", name="episodeNumber", value=episode.EpisodeNumber, required)
+    .mb-3
+      label.form-label(for="title") Title
+      input#title.form-control(type="text", name="title", value=episode.Title, required)
+    .mb-3
+      label.form-label(for="description") Description
+      textarea#description.form-control(name="description", rows="3")= episode.Description
+    .mb-3
+      label.form-label(for="duration") Duration (minutes)
+      input#duration.form-control(type="number", name="duration", value=episode.Duration)
+    .mb-3
+      label.form-label(for="videoURL") Video URL
+      input#videoURL.form-control(type="url", name="videoURL", value=episode.VideoURL)
+    .mb-3
+      label.form-label(for="thumbnailURL") Thumbnail URL
+      input#thumbnailURL.form-control(type="url", name="thumbnailURL", value=episode.ThumbnailURL)
+    .mb-3
+      label.form-label(for="releaseDate") Release Date
+      input#releaseDate.form-control(type="date", name="releaseDate", value=episode.ReleaseDate ? new Date(episode.ReleaseDate).toISOString().split('T')[0] : '')
+    .btn-group
+      button.btn.btn-primary(type="submit") Update
+      a.btn.btn-secondary(href=`/contents/${content.ContentID}/seasons/${season.SeasonID}/episodes/${episode.EpisodeID}`) Cancel 
